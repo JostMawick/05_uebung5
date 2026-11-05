@@ -11,6 +11,7 @@ for row in range(3, img.shape[0]-3):
         iscorner = False
         
         # TODO: Add corner checks here
+        p = img[row,col]
         
         if iscorner:
             corner_img[row,col] = 255

@@ -78,29 +78,53 @@ corner_img, descriptor_img = detect_and_describe(img)
 corner_img_shifted, descriptor_img_shifted = detect_and_describe(img_shifted)
 
 base_corner_descriptor = descriptor_img[34, 32]
+min_distance = 256
+best_matches = []
+
 for row in range(3, img_shifted.shape[0]-3):
-        for col in range(3, img_shifted.shape[1]-3):
-            if img_shifted[row,col] == 255:
-                shiftet_corner_descriptor = descriptor_img_shifted[row, col]
+    for col in range(3, img_shifted.shape[1]-3):
+        if corner_img_shifted[row, col] == 255:
+            shifted_corner_descriptor = descriptor_img_shifted[row, col]
+            xor_result = np.bitwise_xor(
+                int(base_corner_descriptor),
+                int(shifted_corner_descriptor)
+            )
+            distance = int(xor_result).bit_count()
+
+            if distance < min_distance:
+                min_distance = distance
+                best_matches = [(row, col)]
+            elif distance == min_distance:
+                best_matches.append((row, col))
+
+print("Minimale Hamming-Distanz:", min_distance)
+print("Beste Treffer:", best_matches)
+
+matches_top_img = np.zeros(img_shifted.shape)
+for row, col in best_matches:
+    matches_top_img[row, col] = 255
 
 
 
-plt.subplot(231)
+plt.subplot(241)
 plt.imshow(img, cmap='gray', interpolation='none')
 
-plt.subplot(232)
+plt.subplot(242)
 plt.imshow(corner_img, cmap='gray', interpolation='none')
 
-plt.subplot(233)
+plt.subplot(243)
 plt.imshow(descriptor_img, cmap='gray', interpolation='none')
 
-plt.subplot(234)
+plt.subplot(245)
 plt.imshow(img_shifted, cmap='gray', interpolation='none')
 
-plt.subplot(235)
+plt.subplot(246)
 plt.imshow(corner_img_shifted, cmap='gray', interpolation='none')
 
-plt.subplot(236)
+plt.subplot(247)
 plt.imshow(descriptor_img_shifted, cmap='gray', interpolation='none')
+
+plt.subplot(248)
+plt.imshow(matches_top_img, cmap='gray', interpolation='none')
 
 plt.show()

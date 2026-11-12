@@ -72,9 +72,18 @@ def detect_and_describe(img):
 
     return corner_img, descriptor_img
 
-
+print("Descriptor example")
+print("11111000")
 corner_img, descriptor_img = detect_and_describe(img)
 corner_img_shifted, descriptor_img_shifted = detect_and_describe(img_shifted)
+
+base_corner_descriptor = descriptor_img[34, 32]
+for row in range(3, img_shifted.shape[0]-3):
+        for col in range(3, img_shifted.shape[1]-3):
+            if img_shifted[row,col] == 255:
+                shiftet_corner_descriptor = descriptor_img_shifted[row, col]
+
+
 
 plt.subplot(231)
 plt.imshow(img, cmap='gray', interpolation='none')
